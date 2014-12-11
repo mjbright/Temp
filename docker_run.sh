@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ################################################################################
 # Helper functions:
@@ -39,13 +39,14 @@ esac
 
 # Determine script location and filename from full path:
 SCRIPT_DIR=${SCRIPT%/*}
+[ "$SCRIPT_DIR" = "$SCRIPT" ] && SCRIPT_DIR=$PWD
 SCRIPT_FILE=${SCRIPT##*/}
 
 # Invoke script in container:
 #docker run -v $SCRIPT_DIR/:/src -t ${IMAGE}:${IMAGE_TAG} bash -c "ls -altr /src; echo HELLO; $EXE /src/$SCRIPT_FILE"; } |& tee -a /tmp/docker_run.op
 {
 set -x;
-docker run -v $SCRIPT_DIR/:/src -t ${IMAGE}:${IMAGE_TAG} bash -c "$EXE /src/$SCRIPT_FILE"; } |& tee -a /tmp/docker_run.op
+docker run -v $SCRIPT_DIR/:/src -t ${IMAGE}:${IMAGE_TAG} bash -c "$EXE /src/$SCRIPT_FILE"; } 2>&1| tee -a /tmp/docker_run.op
 set +x
 
 
